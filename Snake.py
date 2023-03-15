@@ -1,5 +1,5 @@
 import pygame;
-import random,time,keyboard,datetime;
+import random,time;
 pygame.init();
 gd = pygame.display.set_mode((600,600))
 pygame.display.set_caption('Snake Game');
@@ -8,10 +8,31 @@ def Oyun_Snake():
         font = pygame.font.SysFont(None,30);
         text = font.render('Apples: '+str(number),True,(255,255,255))
         gd.blit(text,(0,0));
+    def get_high_score():
+        f0=open("high_score.txt","a");
+        f0.close();
+        f0=open("high_score.txt","r");
+        f1=f0.read();
+        f0.close();
+        if len(f1)==0:
+            f1=0;
+            f0=open("high_score.txt","w");
+            f0.write(str(f1));
+            f0.close();
+        return int(f1);
+    def update_high_score(apples,highscore):
+        if apples>highscore:
+            f0=open("high_score.txt","w");
+            f0.write(str(apples));
+            f0.close();
+    def high_score(number):
+        font = pygame.font.SysFont(None,30);
+        text = font.render('High Score: '+str(number),True,(255,255,255))
+        gd.blit(text,(0,25));
     def snake(x,y,ax,ay,sp):
         pygame.draw.rect(gd,(0,0,0),[0,0,600,600]);
         pygame.draw.rect(gd,(255,0,0),[(ax*40),(ay*40),40,40]);
-        pygame.draw.rect(gd,(255,255,0),[x,y,40,40]);
+        pygame.draw.rect(gd,(225,200,0),[x,y,40,40]);
         for i in range(len(sp)):
             if i%2==0:
                 pygame.draw.rect(gd,(255,255,0),[(sp[i]),(sp[i+1]),40,40]);
@@ -31,8 +52,6 @@ def Oyun_Snake():
             b=1;
             xC=0;
             yC=0;
-            sxC=0;
-            syC=0;
             ax=11;
             ay=6;
             Dur=0;
@@ -53,6 +72,8 @@ def Oyun_Snake():
                     break;
                 snake(x,y,ax,ay,sp);
                 score(sayi);
+                update_high_score(sayi,get_high_score());
+                high_score(get_high_score());
                 pygame.display.update();
                 key = pygame.key.get_pressed();
                 if x==(ax*40) and y==(ay*40):
@@ -120,7 +141,7 @@ def Oyun_Snake():
                     y=560;
                 if y>560:
                     y=0;
-                time.sleep(0.13);
+                time.sleep(0.08);
                 pygame.display.update();
             if Dur==1:
                 break;
